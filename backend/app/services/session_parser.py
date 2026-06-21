@@ -15,6 +15,13 @@ class SessionParser:
 
             file_hash = hashlib.md5(content.encode("utf-8")).hexdigest()
 
+            if file_path.suffix.lower() == ".jsonl":
+                parsed = SessionParser._parse_jsonl_format(content, file_path.name)
+                if parsed:
+                    parsed["file_hash"] = file_hash
+                    parsed["source_file"] = file_path.name
+                    return parsed
+
             data = json.loads(content)
 
             parser = SessionParser._detect_parser(data)
@@ -97,7 +104,11 @@ class SessionParser:
             else:
                 total_input_tokens += input_tokens
 
-            msg_id = msg.get("id", f"{session_id}_msg_{idx}")
+            raw_msg_id = msg.get("id", "")
+            if raw_msg_id:
+                msg_id = f"{session_id}_{raw_msg_id}"
+            else:
+                msg_id = f"{session_id}_msg_{idx}"
 
             messages.append(
                 {
@@ -221,3 +232,158 @@ class SessionParser:
                 return float(ts)
             except (ValueError, TypeError):
                 return 0.0
+
+    @staticmethod
+    def _parse_jsonl_format(content: str, filename: str) -> Optional[Dict]:
+        lines = content.strip().split("\n")
+        if not lines:
+            return None
+
+        events = []
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                events.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+
+        if not events:
+            return None
+
+        raw_session_id = ""
+        for event in events:
+            if event.get("sessionId"):
+                raw_session_id = event["sessionId"]
+                break
+
+        file_stem = Path(filename).stem
+        if filename.lower().startswith("agent-") or not raw_session_id:
+            session_id = file_stem
+        else:
+            session_id = raw_session_id
+
+        title = "Untitled"
+        model = ""
+        messages = []
+        total_input_tokens = 0
+        total_output_tokens = 0
+        msg_index = 0
+        min_timestamp = None
+        max_timestamp = None
+
+        for event in events:
+            event_type = event.get("type", "")
+
+            if event_type == "ai-title":
+                title = event.get("title", "") or event.get("text", "")
+                if title:
+                    title = title.strip()
+
+            if event_type in ("user", "assistant"):
+                msg_data = event.get("message", {})
+                if not msg_data:
+                    continue
+
+                role = msg_data.get("role", event_type)
+                content_parts = []
+                raw_content = msg_data.get("content", "")
+
+                if isinstance(raw_content, str):
+                    content_parts.append(raw_content)
+                elif isinstance(raw_content, list):
+                    for part in raw_content:
+                        if isinstance(part, dict):
+                            if part.get("type") == "text" and "text" in part:
+                                content_parts.append(part["text"])
+                            elif part.get("type") == "thinking" and "thinking" in part:
+                                pass
+
+                msg_content = "\n".join([p for p in content_parts if p.strip()])
+
+                if not msg_content.strip():
+                    continue
+
+                ts_str = event.get("timestamp", "")
+                ts = SessionParser._parse_timestamp(ts_str) if ts_str else 0.0
+
+                if min_timestamp is None or (ts > 0 and ts < min_timestamp):
+                    min_timestamp = ts
+                if max_timestamp is None or (ts > 0 and ts > max_timestamp):
+                    max_timestamp = ts
+
+                msg_model = msg_data.get("model", model)
+                if msg_model and not model:
+                    model = msg_model
+
+                usage = msg_data.get("usage", {}) or {}
+                input_tokens = usage.get("input_tokens", 0) or 0
+                output_tokens = usage.get("output_tokens", 0) or 0
+
+                if role == "assistant":
+                    total_output_tokens += output_tokens
+                    total_input_tokens += input_tokens
+                else:
+                    total_input_tokens += input_tokens
+
+                msg_uuid = event.get("uuid", "")
+                if msg_uuid:
+                    msg_id = f"{session_id}_{msg_uuid}"
+                else:
+                    msg_id = f"{session_id}_msg_{msg_index}"
+
+                messages.append(
+                    {
+                        "id": str(msg_id),
+                        "session_id": str(session_id),
+                        "role": role,
+                        "content": msg_content,
+                        "model": msg_model or "",
+                        "created_at": float(ts) if ts else 0.0,
+                        "tokens": input_tokens + output_tokens,
+                        "input_tokens": input_tokens,
+                        "output_tokens": output_tokens,
+                        "message_index": msg_index,
+                    }
+                )
+                msg_index += 1
+
+        if not title or title == "Untitled":
+            title = SessionParser._extract_title_from_messages(messages)
+
+        created_at = min_timestamp if min_timestamp else 0.0
+        updated_at = max_timestamp if max_timestamp else created_at
+
+        if messages and created_at == 0.0:
+            created_at = messages[0]["created_at"]
+        if messages and updated_at == 0.0:
+            updated_at = messages[-1]["created_at"]
+
+        return {
+            "id": str(session_id),
+            "title": title or "Untitled",
+            "created_at": float(created_at),
+            "updated_at": float(updated_at),
+            "model": model or "",
+            "total_tokens": total_input_tokens + total_output_tokens,
+            "input_tokens": total_input_tokens,
+            "output_tokens": total_output_tokens,
+            "message_count": len(messages),
+            "messages": messages,
+            "raw_data": json.dumps(events, ensure_ascii=False),
+        }
+
+    @staticmethod
+    def _extract_title_from_messages(messages: List[Dict]) -> str:
+        if not messages:
+            return "Untitled"
+        for msg in messages:
+            if msg.get("role") == "user":
+                content = msg.get("content", "")
+                if content:
+                    lines = content.strip().split("\n")
+                    first_line = lines[0] if lines else ""
+                    title = first_line[:80].strip()
+                    return title if title else "Untitled"
+        return "Untitled"

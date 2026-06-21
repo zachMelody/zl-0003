@@ -147,7 +147,7 @@ class SessionService:
         dir_path = Path(sessions_dir) if sessions_dir else settings.sessions_full_dir
         dir_path.mkdir(parents=True, exist_ok=True)
 
-        json_files = list(dir_path.glob("*.json")) + list(dir_path.glob("*.jsonl"))
+        json_files = list(dir_path.rglob("*.json")) + list(dir_path.rglob("*.jsonl"))
         
         total_files = len(json_files)
         new_sessions = 0

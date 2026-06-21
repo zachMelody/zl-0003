@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 from pathlib import Path
+import os
 
 
 class Settings(BaseSettings):
@@ -9,7 +10,7 @@ class Settings(BaseSettings):
     port: int = 8000
 
     db_path: str = "data/sessions.db"
-    sessions_dir: str = "data/sessions"
+    sessions_dir: str = str(Path.home() / ".claude" / "projects")
 
     cors_origins: list = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
