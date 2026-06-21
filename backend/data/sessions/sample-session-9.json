@@ -1,0 +1,53 @@
+{
+  "id": "sample-session-9",
+  "title": "API 设计最佳实践 - 第9次对话",
+  "created_at": 1781549031.516287,
+  "updated_at": 1781550779.516287,
+  "model": "claude-3-haiku-20240307",
+  "total_tokens": 1952,
+  "input_tokens": 753,
+  "output_tokens": 1199,
+  "message_count": 4,
+  "messages": [
+    {
+      "id": "sample-session-9-msg-0",
+      "role": "user",
+      "content": "关于API 设计最佳实践，我想了解更多相关知识。\n\n请问有什么好的学习资源或实践建议吗？",
+      "model": "",
+      "created_at": 1781549031.516287,
+      "input_tokens": 302,
+      "output_tokens": 0,
+      "message_index": 0
+    },
+    {
+      "id": "sample-session-9-msg-1",
+      "role": "assistant",
+      "content": "好的，关于API 设计最佳实践，我来为您详细解答：\n\n1. 首先，理解核心概念非常重要\n2. 其次，多实践多练习才能真正掌握\n3. 最后，建议参考官方文档和优质教程\n\n希望这些建议对您有帮助！",
+      "model": "claude-3-haiku-20240307",
+      "created_at": 1781549151.516287,
+      "input_tokens": 0,
+      "output_tokens": 824,
+      "message_index": 1
+    },
+    {
+      "id": "sample-session-9-msg-2",
+      "role": "user",
+      "content": "关于API 设计最佳实践，我想了解更多相关知识。\n\n请问有什么好的学习资源或实践建议吗？",
+      "model": "",
+      "created_at": 1781549271.516287,
+      "input_tokens": 451,
+      "output_tokens": 0,
+      "message_index": 2
+    },
+    {
+      "id": "sample-session-9-msg-3",
+      "role": "assistant",
+      "content": "好的，关于API 设计最佳实践，我来为您详细解答：\n\n1. 首先，理解核心概念非常重要\n2. 其次，多实践多练习才能真正掌握\n3. 最后，建议参考官方文档和优质教程\n\n希望这些建议对您有帮助！",
+      "model": "claude-3-haiku-20240307",
+      "created_at": 1781549391.516287,
+      "input_tokens": 0,
+      "output_tokens": 375,
+      "message_index": 3
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "id": "sample-session-16",
+  "title": "算法与数据结构复习 - 第16次对话",
+  "created_at": 1780170231.516287,
+  "updated_at": 1780176235.516287,
+  "model": "claude-3-sonnet-20240229",
+  "total_tokens": 3614,
+  "input_tokens": 900,
+  "output_tokens": 2714,
+  "message_count": 5,
+  "messages": [
+    {
+      "id": "sample-session-16-msg-0",
+      "role": "user",
+      "content": "关于算法与数据结构复习，我想了解更多相关知识。\n\n请问有什么好的学习资源或实践建议吗？",
+      "model": "",
+      "created_at": 1780170231.516287,
+      "input_tokens": 456,
+      "output_tokens": 0,
+      "message_index": 0
+    },
+    {
+      "id": "sample-session-16-msg-1",
+      "role": "assistant",
+      "content": "好的，关于算法与数据结构复习，我来为您详细解答：\n\n1. 首先，理解核心概念非常重要\n2. 其次，多实践多练习才能真正掌握\n3. 最后，建议参考官方文档和优质教程\n\n希望这些建议对您有帮助！",
+      "model": "claude-3-sonnet-20240229",
+      "created_at": 1780170351.516287,
+      "input_tokens": 0,
+      "output_tokens": 1470,
+      "message_index": 1
+    },
+    {
+      "id": "sample-session-16-msg-2",
+      "role": "user",
+      "content": "关于算法与数据结构复习，我想了解更多相关知识。\n\n请问有什么好的学习资源或实践建议吗？",
+      "model": "",
+      "created_at": 1780170471.516287,
+      "input_tokens": 250,
+      "output_tokens": 0,
+      "message_index": 2
+    },
+    {
+      "id": "sample-session-16-msg-3",
+      "role": "assistant",
+      "content": "好的，关于算法与数据结构复习，我来为您详细解答：\n\n1. 首先，理解核心概念非常重要\n2. 其次，多实践多练习才能真正掌握\n3. 最后，建议参考官方文档和优质教程\n\n希望这些建议对您有帮助！",
+      "model": "claude-3-sonnet-20240229",
+      "created_at": 1780170591.516287,
+      "input_tokens": 0,
+      "output_tokens": 1244,
+      "message_index": 3
+    },
+    {
+      "id": "sample-session-16-msg-4",
+      "role": "user",
+      "content": "关于算法与数据结构复习，我想了解更多相关知识。\n\n请问有什么好的学习资源或实践建议吗？",
+      "model": "",
+      "created_at": 1780170711.516287,
+      "input_tokens": 194,
+      "output_tokens": 0,
+      "message_index": 4
+    }
+  ]
+}
